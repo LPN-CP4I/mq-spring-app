@@ -7,6 +7,8 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ibm.mqclient.model.ResponseData;
@@ -49,6 +51,15 @@ public class MQClientController {
 		return responseData;
 
 	}
+
+        @GetMapping(value = "/api/send-to-queue")
+            ResponseData sendHelloToQueueName(@RequestParam String queueName) {
+            mqService.setQueueName(queueName);
+                String dataSentToQueue = mqService.sendHelloWorld();
+                final String text = "Successfully sent message to queue " + mqService.getQueueName();
+                ResponseData responseData = new ResponseData("OK", text, dataSentToQueue);
+                return responseData;
+            }
 
 	@PostMapping("/api/send-json")
 	@ApiOperation(value = "Put a json message on the MQ queue.", notes = "This api puts a json message on the MQ queue.")	
